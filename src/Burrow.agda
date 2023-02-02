@@ -14,6 +14,9 @@ import Burrow.Execution.Core
 import Burrow.Execution.Derived
 
 import Burrow.Framework.Definition
+import Burrow.Framework.Elimination
+import Burrow.Framework.Elimination.Definitions
+import Burrow.Framework.Elimination.WellFormed
 import Burrow.Framework.Mapping.Behavior
 import Burrow.Framework.Mapping.Core
 import Burrow.Framework.Mapping.Definitions
