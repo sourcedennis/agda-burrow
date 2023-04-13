@@ -9,11 +9,14 @@ module Burrow.Execution.Derived
   where
 
 -- Stdlib imports
+open import Relation.Binary.PropositionalEquality using (_≡_)
 open import Function using (flip)
 -- Local library imports
+open import Dodo.Unary
 open import Dodo.Binary
 -- Local imports
 open import Burrow.Event.Core {arch}
+open import Burrow.Event.Pred
 open import Burrow.Event.Rel
 
 
@@ -45,17 +48,27 @@ open Execution ex
 
 -- ## Definitions: Execution Relation Helpers
 
+-- | internal. relates po-related events.
+--
+-- We also include _≡_, which relates events to themselves. Otherwise, an event
+-- would be external to itself, which makes no sense either.
+int : Rel₀ Event
+int = po ∪₂ flip po ∪₂ _≡_
+
+ext : Rel₀ Event
+ext = ¬₂ int
+
 internal :
     Rel₀ Event
     ----------
   → Rel₀ Event
-internal R = R ∩₂ po
+internal R = R ∩₂ int
 
 external :
     Rel₀ Event
     ----------
   → Rel₀ Event
-external R = R ∩₂ (¬₂ po)
+external R = R ∩₂ ext
 
 internal⊆ :
     (R : Rel₀ Event)
@@ -106,3 +119,9 @@ fre = external fr
 -- | Internal from-read relation
 fri : Rel₀ Event
 fri = internal fr
+
+-- `po` between non-skip events.
+-- skip events are merely an artifact of our proof structure.
+-- intuitively, they are NOPs. they are not ordered with anything.
+po-no-skip : Rel₀ Event
+po-no-skip = po ∩₂ ((¬₁ EvSkip)  ×₂  (¬₁ EvSkip))

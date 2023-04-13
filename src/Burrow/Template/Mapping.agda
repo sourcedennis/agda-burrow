@@ -15,6 +15,7 @@ open import Burrow.Execution.Core public
 open import Burrow.WellFormed.Core public
 open import Burrow.Event.Core public
 open import Burrow.Event.Pred public
+open import Burrow.Event.Rel public
 open import Burrow.Event.Properties public
 
 open Event public

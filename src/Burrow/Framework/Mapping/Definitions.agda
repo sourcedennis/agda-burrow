@@ -237,6 +237,16 @@ pi⁺[⇐$] : Rel[⇐$] (TransClosure (po-imm src)) (TransClosure (po-imm dst))
 pi⁺[⇐$] = [⇐]→₂[⇐$] pi⁺[⇐]
 
 
+≡[⇒] : Rel[⇒] _≡_ _≡_
+≡[⇒] = [$⇒]→₂[⇒] ev[$⇒]eq
+
+int[⇒] : Rel[⇒] (int src) (int dst)
+int[⇒] = ∪₂[⇒] po[⇒] (∪₂[⇒] (flip po[⇒]) ≡[⇒])
+
+ext[⇒] : Rel[⇒] (ext src) (ext dst)
+ext[⇒] = ¬₂[⇒] (∪₂[⇐$] po[⇐$] (∪₂[⇐$] (flip po[⇐$]) ev[⇐$]eq))
+
+
 rf[$⇒] : Rel[$⇒] (rf src) (rf dst)
 rf[$⇒] = rel[$⇒] rfˡ∈ex rfʳ∈ex
 
@@ -249,8 +259,11 @@ rf[⇐] = rel[⇐] rfˡ∈ex rfʳ∈ex
 rf[⇐$] : Rel[⇐$] (rf src) (rf dst)
 rf[⇐$] = [⇐]→₂[⇐$] rf[⇐]
 
+rfi[⇒] : Rel[⇒] (rfi src) (rfi dst)
+rfi[⇒] = ∩₂[⇒] rf[⇒] int[⇒]
+
 rfe[⇒] : Rel[⇒] (rfe src) (rfe dst)
-rfe[⇒] = ∩₂[⇒] rf[⇒] ¬po[⇒]
+rfe[⇒] = ∩₂[⇒] rf[⇒] ext[⇒]
 
 
 co[$⇒] : Rel[$⇒] (co src) (co dst)
@@ -265,8 +278,11 @@ co[⇐] = rel[⇐] coˡ∈ex coʳ∈ex
 co[⇐$] : Rel[⇐$] (co src) (co dst)
 co[⇐$] = [⇐]→₂[⇐$] co[⇐]
 
+coi[⇒] : Rel[⇒] (coi src) (coi dst)
+coi[⇒] = ∩₂[⇒] co[⇒] int[⇒]
+
 coe[⇒] : Rel[⇒] (coe src) (coe dst)
-coe[⇒] = ∩₂[⇒] co[⇒] ¬po[⇒]
+coe[⇒] = ∩₂[⇒] co[⇒] ext[⇒]
 
 
 fr[⇒] : Rel[⇒] (fr src) (fr dst)
@@ -274,5 +290,8 @@ fr[⇒] x∈src y∈src (rf⁻¹[xz] ⨾[ z ]⨾ co[zy]) =
   let z∈src = coˡ∈src co[zy]
   in rf[⇒] z∈src x∈src rf⁻¹[xz] ⨾[ ev[⇒] z∈src ]⨾ co[⇒] z∈src y∈src co[zy]
 
+fri[⇒] : Rel[⇒] (fri src) (fri dst)
+fri[⇒] = ∩₂[⇒] fr[⇒] int[⇒]
+
 fre[⇒] : Rel[⇒] (fre src) (fre dst)
-fre[⇒] = ∩₂[⇒] fr[⇒] ¬po[⇒]
+fre[⇒] = ∩₂[⇒] fr[⇒] ext[⇒]

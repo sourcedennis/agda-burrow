@@ -22,7 +22,7 @@ module Burrow.Framework.Primitives
 -- Stdlib imports
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; subst; cong) renaming (sym to ≡-sym)
-open import Function using (_∘_)
+open import Function using (_∘_; flip)
 open import Data.Product using (∃-syntax; _×_; _,_; proj₁)
 open import Data.Sum using (inj₁; inj₂)
 open import Relation.Nullary using (¬_; Dec; yes; no)
@@ -331,6 +331,23 @@ Rel[⇐]² R = Rel[⇐] R R
   → Rel[⇒] (Rˢ ∩₂ Qˢ) (Rᵗ ∩₂ Qᵗ)
 ∩₂[⇒] R[⇒] Q[⇒] x∈src y∈src (Rˢxy , Qˢxy) =
   (R[⇒] x∈src y∈src Rˢxy , Q[⇒] x∈src y∈src Qˢxy)
+
+∪₂[⇒] :
+    Rel[⇒] Rˢ Rᵗ
+  → Rel[⇒] Qˢ Qᵗ
+    ----------------------------
+  → Rel[⇒] (Rˢ ∪₂ Qˢ) (Rᵗ ∪₂ Qᵗ)
+∪₂[⇒] R[⇒] Q[⇒] x∈src y∈src =
+  Data.Sum.map (R[⇒] x∈src y∈src) (Q[⇒] x∈src y∈src)
+
+∪₂[⇐$] :
+    Rel[⇐$] Rˢ Rᵗ
+  → Rel[⇐$] Qˢ Qᵗ
+    ----------------------------
+  → Rel[⇐$] (Rˢ ∪₂ Qˢ) (Rᵗ ∪₂ Qᵗ)
+∪₂[⇐$] R[⇐$] Q[⇐$] x∈src y∈src =
+  Data.Sum.map (R[⇐$] x∈src y∈src) (Q[⇐$] x∈src y∈src)
+  
 
 --
 -- We *explicitly* include the source and target relations, because Agda can't

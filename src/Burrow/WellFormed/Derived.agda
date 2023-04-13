@@ -422,6 +422,18 @@ fr-irreflexive {x} refl fr[xx] =
 
 -- ## Well-formedness: Derived internal/external properties
 
+int⊎ext : (x y : Event) → (int ∪₂ ext) x y
+int⊎ext x y with po-dec x y | po-dec y x | ev-dec≡ x y
+... | yes po[xy] | _ | _ = inj₁ (inj₁ po[xy])
+... | no ¬po[xy] | yes po[yx] | _ = inj₁ (inj₂ (inj₁ po[yx]))
+... | no ¬po[xy] | no ¬po[yx] | yes x≡y = inj₁ (inj₂ (inj₂ x≡y))
+... | no ¬po[xy] | no ¬po[yx] | no  x≢y = inj₂ (⊎-¬intro ¬po[xy] ¬po[yx] x≢y)
+  where
+  ⊎-¬intro : {A B C : Set} → ¬ A → ¬ B → ¬ C → ¬ (A ⊎ B ⊎ C)
+  ⊎-¬intro ¬x  _ _ (inj₁ x)        = ¬x x
+  ⊎-¬intro  _ ¬y _ (inj₂ (inj₁ y)) = ¬y y
+  ⊎-¬intro  _ _ ¬z (inj₂ (inj₂ z)) = ¬z z
+
 -- | Law of excluded middle for internal/external relations
 internal⊎external :
     (R : Rel₀ Event)
@@ -429,11 +441,11 @@ internal⊎external :
   → R ⇔₂ internal R ∪₂ external R
 internal⊎external R = ⇔: ⊆-proof ⊇-proof
   where
-  ⊆-proof : R ⊆₂' internal R ∪₂ external R
-  ⊆-proof x y Rxy with po-dec x y
-  ⊆-proof x y Rxy | yes po[xy] = inj₁ (Rxy , po[xy])
-  ⊆-proof x y Rxy | no ¬po[xy] = inj₂ (Rxy , ¬po[xy])
+  import Data.Sum
 
+  ⊆-proof : R ⊆₂' internal R ∪₂ external R
+  ⊆-proof x y Rxy = Data.Sum.map (Rxy ,_) (Rxy ,_) (int⊎ext x y)
+  
   ⊇-proof : internal R ∪₂ external R ⊆₂' R
   ⊇-proof x y (inj₁ (Rxy , _)) = Rxy
   ⊇-proof x y (inj₂ (Rxy , _)) = Rxy
@@ -584,4 +596,3 @@ po⁺⇒po :
   → TransClosure po x y
   → po x y
 po⁺⇒po = ⁺-join-trans po-trans
-
