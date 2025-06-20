@@ -2,4 +2,4 @@ name: burrow
 include:
   src
 depend:
-  standard-library-1.7.1 dodo
+  standard-library-1.7.3 dodo

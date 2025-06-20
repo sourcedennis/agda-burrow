@@ -30,6 +30,8 @@ open import Relation.Nullary.Negation using (contraposition)
 open import Relation.Unary using (Pred; _∈_)
 open import Relation.Binary using (Rel)
 open import Relation.Binary.Construct.Closure.Transitive using (TransClosure; [_]; _∷_)
+open import Relation.Binary.Construct.Closure.ReflexiveTransitive using (Star; ε; _◅_)
+open import Relation.Binary.Construct.Closure.Reflexive using (ReflClosure; refl; [_])
 -- Library imports
 open import Dodo.Unary
 open import Dodo.Binary
@@ -332,6 +334,7 @@ Rel[⇐]² R = Rel[⇐] R R
 ∩₂[⇒] R[⇒] Q[⇒] x∈src y∈src (Rˢxy , Qˢxy) =
   (R[⇒] x∈src y∈src Rˢxy , Q[⇒] x∈src y∈src Qˢxy)
 
+
 ∪₂[⇒] :
     Rel[⇒] Rˢ Rᵗ
   → Rel[⇒] Qˢ Qᵗ
@@ -436,6 +439,18 @@ lr→udr _ Rˡ∈src Rʳ∈src (inj₂ (_ , po[yx])) = Rʳ∈src po[yx]
   let z∈dst = ⁺-lift-predˡ Qˡ∈src Q⁺zy
   in R[⇐]Q x∈dst z∈dst Qxz ∷ ⁺[⇐]ˡ Qˡ∈src R[⇐]Q z∈dst y∈dst Q⁺zy
 
+
+⁺[⇒]ʳ :
+    Rˢ ʳ∈src
+  → Rel[⇒] Rˢ Rᵗ
+    ------------------------------------------
+  → Rel[⇒] (TransClosure Rˢ) (TransClosure Rᵗ)
+⁺[⇒]ʳ Rʳ∈src R[⇒] x∈src y∈src [ R[xy] ] = [ R[⇒] x∈src y∈src R[xy] ]
+⁺[⇒]ʳ Rʳ∈src R[⇒] x∈src y∈src ( R[xz] ∷ R⁺[zy] ) =
+  let z∈src = Rʳ∈src R[xz]
+  in R[⇒] x∈src (Rʳ∈src R[xz]) R[xz] ∷ ⁺[⇒]ʳ Rʳ∈src R[⇒] z∈src y∈src R⁺[zy]
+
+
 imm[$⇒]ˡ :
       Qᵗ ˡ∈ex
     → Rel[⇐] Rˢ Qᵗ
@@ -490,3 +505,20 @@ rmwʳ∈src = relʳ∈src rmwˡ∈ex rmwʳ∈ex
 
 udr-rmw∈src : udr[ src-rmw ]∈src
 udr-rmw∈src = lr→udr src-rmw rmwˡ∈src rmwʳ∈src
+
+
+reflˡ∈src : {x y : Event}
+  → Rˢ ˡ∈src
+  → y ∈ src-events
+  → ReflClosure Rˢ x y
+    ------------------
+  → x ∈ src-events
+reflˡ∈src Rˡ∈src y∈src R?[xy] = ?-predˡ Rˡ∈src R?[xy] y∈src
+
+reflʳ∈src : {x y : Event}
+  → Rˢ ʳ∈src
+  → x ∈ src-events
+  → ReflClosure Rˢ x y
+    ------------------
+  → y ∈ src-events
+reflʳ∈src Rʳ∈src x∈src R?[xy] = ?-predʳ Rʳ∈src R?[xy] x∈src

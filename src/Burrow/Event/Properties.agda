@@ -507,6 +507,14 @@ module ₁ {arch : Arch} where
 
   disjoint-r/w : Disjoint₁ EvR EvW
   disjoint-r/w _ (ev-r , ())
+  
+  disjoint-r/wf : Disjoint₁ EvR (EvW ∪₁ EvF)
+  disjoint-r/wf _ (ev-r , inj₁ ())
+  disjoint-r/wf _ (ev-r , inj₂ ())
+  
+  disjoint-w/rf : Disjoint₁ EvW (EvR ∪₁ EvF)
+  disjoint-w/rf _ (ev-w , inj₁ ())
+  disjoint-w/rf _ (ev-w , inj₂ ())
 
   disjoint-f/r : Disjoint₁ EvF EvR
   disjoint-f/r _ (ev-f , ())

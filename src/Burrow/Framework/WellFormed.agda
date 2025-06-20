@@ -35,6 +35,8 @@ open import Relation.Unary using (_∈_)
 open import Data.Product using (∃-syntax; _,_)
 open import Data.Sum using (inj₁; inj₂)
 open import Function using (_∘_)
+open import Relation.Binary.Construct.Closure.ReflexiveTransitive using (Star; ε; _◅_)
+open import Relation.Binary.Construct.Closure.Reflexive using (ReflClosure; refl; [_])
 -- Library imports
 open import Dodo.Unary
 open import Dodo.Binary
@@ -294,3 +296,58 @@ src-rmwˡ-dec x with src-events-dec x
         let y∈dst = rmwʳ∈ex dst-wf rmw[xy]
         in yes (ev[⇐] y∈dst , rmw[⇐$] x∈src (events[⇐] y∈dst) rmw[xy])
 ... | no x∉rmwˡ = no (¬rmwˡ[⇐$] x∈src x∉rmwˡ)
+
+
+-- #
+
+starˡ∈src : {x y : Eventˢ}
+  → Rˢ ˡ∈src
+  → y ∈ src-events
+  → Star Rˢ x y
+    --------------
+  → x ∈ src-events
+starˡ∈src Rˡ∈src y∈src R*xy = *-predˡ (λ{_ → Rˡ∈src}) R*xy y∈src
+
+starʳ∈src : {x y : Eventˢ}
+  → Rˢ ʳ∈src
+  → x ∈ src-events
+  → Star Rˢ x y
+    --------------
+  → y ∈ src-events
+starʳ∈src Rʳ∈src x∈src R*xy = *-predʳ (λ{_ → Rʳ∈src}) R*xy x∈src
+
+star[⇒]ˡ :
+    Rˢ ˡ∈src
+  → Rel[⇒] Rˢ Rᵗ
+    --------------------------
+  → Rel[⇒] (Star Rˢ) (Star Rᵗ)
+star[⇒]ˡ {Rₛ} {Rₜ} Rₛˡ∈src R[⇒] x∈src y∈src ε =
+  let v : ev[⇒] x∈src ≡ ev[⇒] y∈src
+      v = Eq.cong ev[⇒] (src-events-unique _ x∈src y∈src)
+  in subst-rel (Star Rₜ) refl v ε
+star[⇒]ˡ {Rₛ} {Rₜ} Rₛˡ∈src R[⇒] x∈src y∈src (R[xz] ◅ R*[zy]) =
+  let z∈src = starˡ∈src Rₛˡ∈src y∈src R*[zy]
+  in R[⇒] x∈src z∈src R[xz] ◅ star[⇒]ˡ Rₛˡ∈src R[⇒] z∈src y∈src R*[zy]
+
+star[⇒]ʳ :
+    Rˢ ʳ∈src
+  → Rel[⇒] Rˢ Rᵗ
+    --------------------------
+  → Rel[⇒] (Star Rˢ) (Star Rᵗ)
+star[⇒]ʳ {Rₛ} {Rₜ} Rₛʳ∈src R[⇒] x∈src y∈src ε =
+  let v : ev[⇒] x∈src ≡ ev[⇒] y∈src
+      v = Eq.cong ev[⇒] (src-events-unique _ x∈src y∈src)
+  in subst-rel (Star Rₜ) refl v ε
+star[⇒]ʳ {Rₛ} {Rₜ} Rₛʳ∈src R[⇒] x∈src y∈src (R[xz] ◅ R*[zy]) =
+  let z∈src = Rₛʳ∈src R[xz]
+  in R[⇒] x∈src z∈src R[xz] ◅ star[⇒]ʳ Rₛʳ∈src R[⇒] z∈src y∈src R*[zy]
+
+refl[⇒] :
+    Rel[⇒] Rˢ Rᵗ
+    ----------------------------------------
+  → Rel[⇒] (ReflClosure Rˢ) (ReflClosure Rᵗ)
+refl[⇒] {Rᵗ = Rᵗ} R[⇒] x∈src y∈src refl =
+  let v : ev[⇒] x∈src ≡ ev[⇒] y∈src
+      v = Eq.cong ev[⇒] (src-events-unique _ x∈src y∈src)
+  in subst-rel (ReflClosure Rᵗ) refl v refl
+refl[⇒] R[⇒] x∈src y∈src [ R[xy] ] = [ R[⇒] x∈src y∈src R[xy] ]

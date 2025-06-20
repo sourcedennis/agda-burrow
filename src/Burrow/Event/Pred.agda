@@ -126,6 +126,9 @@ data EvW₌ (loc : Location) (val : Value) (lab-w : LabW) : Pred₀ Event where
 data EvF : Pred₀ Event where
   ev-f : EvF (event-f uid tid lab-f)
 
+data EvF₌ (lab-f : LabF) : Pred₀ Event where
+  ev-r : EvF₌ lab-f (event-f uid tid lab-f)
+
 -- | The set of fence events, with the fence label
 data EvFₜ (lab-f : LabF) : Pred₀ Event where
   ev-f : EvFₜ lab-f (event-f uid tid lab-f)

@@ -347,6 +347,10 @@ po-dec x y | no  x∉ex | no  y∉ex = no (contraposition poˡ∈ex x∉ex)
 po-trans : Transitive po
 po-trans = splittable-trans po-splittable
 
+poloc-trans : Transitive po-loc
+poloc-trans (po[xy] , sloc[xy]) (po[yz] , sloc[yz]) =
+  po-trans po[xy] po[yz] , trans-same-loc sloc[xy] sloc[yz]
+
 
 po-init-tri : Trichotomous _≡_ (filter-rel (EvInit ∩₁ events) po)
 po-init-tri (with-pred x (x-init , x∈ex)) (with-pred y (y-init , y∈ex))
