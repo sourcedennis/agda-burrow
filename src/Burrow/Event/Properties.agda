@@ -525,6 +525,10 @@ module ₁ {arch : Arch} where
   disjoint-f/rw : Disjoint₁ EvF EvRW
   disjoint-f/rw _ (ev-f , ())
   
+  disjoint-f/r∪w : Disjoint₁ EvF (EvR ∪₁ EvW)
+  disjoint-f/r∪w _ (ev-f , inj₁ ())
+  disjoint-f/r∪w _ (ev-f , inj₂ ())
+  
   disjoint-r/init : Disjoint₁ EvR EvInit
   disjoint-r/init _ (ev-r , ())
 
@@ -552,6 +556,10 @@ module ₁ {arch : Arch} where
   disjoint-init/rwₙₜ : Disjoint₁ EvInit (EvRWₙₜ tmov)
   disjoint-init/rwₙₜ _ (ev-init , ())
 
+  disjoint-init/rf : Disjoint₁ EvInit (EvR ∪₁ EvF)
+  disjoint-init/rf _ (ev-init , inj₁ ())
+  disjoint-init/rf _ (ev-init , inj₂ ())
+  
   disjoint-wₜ : Disjoint₁ (EvWₜ tmov) (EvWₜ trmw)
   disjoint-wₜ _ (ev-init refl , ev-init ())
   disjoint-wₜ _ (ev-w tmov≡tag₁ , ev-w trmw≡tag₂) =
